@@ -5,7 +5,9 @@ import torch
 import torch.utils.data as data
 import torchvision.transforms as T
 from PIL import Image
+import logging ##DEBUG
 
+logging.basicConfig(filename='DATALOADING_ERROR.log', level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s') ##DEBUG
 
 class LowLightFDataset(data.Dataset):
     def __init__(self, root, image_split='images_aug', targets_split='targets', training=True):
@@ -16,15 +18,28 @@ class LowLightFDataset(data.Dataset):
         self.training = training
         print('----', image_split, targets_split, '----')
         self.imgs = list(sorted(os.listdir(self.img_root)))
+        logging.debug("This is the len of images in root: %d", len(self.imgs)) ##DEBUG
         self.gts = list(sorted(os.listdir(self.target_root)))
+        logging.debug(f"\n This is the len of targets in target : {len(self.gts)}")
+        # names = [img_name.split('_')[-] + '.' + img_name.split('.')[-1] for img_name in self.imgs] ##DEBUG
+        names = ['_'.join(img_name.split('_')[:-1]) + '.' + img_name.split('.')[-1] for img_name in self.imgs] ##DEBUG
 
-        names = [img_name.split('_')[0] + '.' + img_name.split('.')[-1] for img_name in self.imgs]
+        # logging.info(f"\n This is the updated root of names : \n {names}")
+        # self.imgs = list(
+        #     filter(lambda img_name: img_name.split('_')[0] + '.' + img_name.split('.')[-1] in self.gts, self.imgs))
+
+        # self.gts = list(filter(lambda gt: gt in names, self.gts))
         self.imgs = list(
-            filter(lambda img_name: img_name.split('_')[0] + '.' + img_name.split('.')[-1] in self.gts, self.imgs))
+            filter(lambda img_name: '_'.join(img_name.split('_')[:-1]) + '.' + img_name.split('.')[-1] in self.gts, self.imgs)
+        ) ##DEBUG
 
-        self.gts = list(filter(lambda gt: gt in names, self.gts))
+        self.gts = list(filter(lambda gt: gt in names, self.gts)) ##DEBUG
+
+
 
         print(len(self.imgs), len(self.gts))
+        logging.debug(f"\n This is the len of images in root: {len(self.imgs)}") ##DEBUG
+        logging.debug(f"\n This is the len of targets in target : {len(self.gts)}") ##DEBUG
         self.preproc = T.Compose(
             [T.ToTensor()]
         )

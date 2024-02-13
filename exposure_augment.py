@@ -24,7 +24,11 @@ def main(fip, fod):
     top_mag_diff = torch.topk(mag_diff, num_gen).values
     min_gain = top_mag_diff[top_mag_diff > 0][-1]
     min_mag = mag[0]
-    max_mag = mag[mag_diff > min_gain][-1]
+    if (mag_diff > min_gain).any(): #EDIT
+        max_mag = mag[mag_diff > min_gain][-1] #--orignal--
+    else: #EDIT
+        max_mag = min_mag  # EDIT
+
     fn, ext = os.path.basename(fip).split('.')
     bar.set_description(f'{fn}: {min_gain}')
     ma = np.arange(1, min_mag - min_gain, min_gain * 2)
@@ -50,8 +54,8 @@ def main(fip, fod):
 
 if __name__ == '__main__':
     # one needs to download it online
-    fid = './data/LOL/train/images'
-    fod = './data/LOL/train/images_aug'
+    fid = './bread_data/input'
+    fod = './bread_data/input_aug'
     os.makedirs(fod, exist_ok=True)
 
     bar = tqdm.tqdm(os.listdir(fid))

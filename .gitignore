@@ -127,3 +127,12 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+
+# Unnecessary code
+__pycache__/
+logs/
+checkpoints/
+data/
+test-data-ovvy/
+bread_data/

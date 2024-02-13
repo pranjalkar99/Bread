@@ -115,6 +115,9 @@ def train(opt):
 
     training_set = LowLightFDataset(os.path.join(opt.data_path, 'train'), image_split='images_aug',
                                     targets_split='targets')
+    print(os.path.join(opt.data_path,'train')) ##DEBUG
+    print(len(training_set)) ## DEBUG
+    
     training_generator = DataLoader(training_set, **training_params)
 
     val_set = LowLightDataset(os.path.join(opt.data_path, 'eval'), targets_split='targets')
